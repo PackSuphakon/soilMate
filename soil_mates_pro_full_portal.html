@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil mates - Sustainable Soil Management Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #113322;
+            --primary-light: #2e6f40;
+            --pro-gold: #D4AF37;
+            --pro-bg: #FFF9E6;
+            --bg-color: #FDFDFB;
+            --surface: #FFFFFF;
+            --radius-large: 24px;
+            --radius-medium: 16px;
+            --radius-small: 8px;
+            --text-main: #333333;
+            --text-light: #777777;
+            --border-color: #eef2ef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Bar */
+        navbar {
+            background-color: var(--surface);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: var(--radius-small);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background-color: #f4f8f5;
+            font-weight: 700;
+        }
+
+        /* Pro Badge Elements */
+        .pro-tag {
+            background: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            color: #4a3500;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pro-badge-floating {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: var(--pro-gold);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 14px;
+            z-index: 5;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 15px 4px 4px;
+            background: var(--pro-bg);
+            border-radius: 30px;
+            border: 1px solid #f0e0b0;
+            margin-left: 10px;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            background: var(--pro-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Main Content Container */
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Generic UI Elements */
+        .section-header { margin-bottom: 30px; }
+        .section-title { font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .section-sub { font-size: 15px; color: var(--text-light); }
+
+        .card {
+            background: var(--surface); border-radius: var(--radius-large);
+            padding: 30px; box-shadow: 0 4px 15px rgba(17, 51, 34, 0.03);
+            border: 1px solid var(--border-color); margin-bottom: 25px;
+        }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--primary); font-weight: 600; font-size: 15px;
+            margin-bottom: 25px; cursor: pointer; background: #eef2ef;
+            padding: 8px 16px; border-radius: 20px; border: none; transition: background 0.2s;
+        }
+        .back-btn:hover { background: #e2ede4; }
+
+        /* === PAGE 1: KNOWLEDGE BASE === */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white; padding: 40px; border-radius: var(--radius-large);
+            margin-bottom: 35px; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: 0 10px 25px rgba(17, 51, 34, 0.15);
+        }
+
+        .hero-text h2 { font-size: 26px; margin-bottom: 10px; font-weight: 700; }
+        .hero-text p { font-size: 15px; opacity: 0.9; max-width: 600px; }
+        
+        .btn-pro-action {
+            background: linear-gradient(45deg, #f39c12, #f1c40f); color: #4a3500;
+            border: none; padding: 14px 28px; font-size: 16px; font-weight: 700;
+            border-radius: var(--radius-medium); cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 20px rgba(243, 156, 18, 0.2); transition: transform 0.2s; white-space: nowrap;
+        }
+        .btn-pro-action:hover { transform: scale(1.03); }
+
+        .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        @media (max-width: 900px) { .grid-menu { grid-template-columns: repeat(2, 1fr); } .hero-banner { flex-direction: column; text-align: center; gap: 20px; } }
+        @media (max-width: 600px) { .grid-menu { grid-template-columns: 1fr; } }
+
+        .grid-item {
+            background: var(--surface); padding: 30px 20px; border-radius: var(--radius-large);
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color); cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative;
+        }
+        .grid-item:hover { transform: translateY(-5px); border-color: var(--primary-light); }
+
+        .grid-icon { font-size: 40px; margin-bottom: 15px; }
+        .icon-ph { color: #FF9800; } .icon-water { color: #03A9F4; }
+        .icon-leaf { color: #4CAF50; } .icon-bug { color: #E91E63; }
+        .grid-title { font-size: 18px; font-weight: 600; color: var(--primary); }
+        .grid-count { font-size: 13px; color: var(--text-light); margin-top: 5px; }
+
+        .article-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        @media (max-width: 900px) { .article-layout { grid-template-columns: 1fr; } }
+        .article-list { display: flex; flex-direction: column; gap: 20px; }
+        .article-card {
+            display: flex; background: var(--surface); padding: 20px; border-radius: var(--radius-medium);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02); align-items: center; gap: 20px; border: 1px solid var(--border-color);
+        }
+        .article-img { width: 70px; height: 70px; background: #eaf2ea; border-radius: var(--radius-medium); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .article-info { flex-grow: 1; }
+        .article-title { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+        .article-tag { display: inline-block; background: #eef2ef; color: #4CAF50; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+
+        /* === PRO SOIL ANALYZER FORM === */
+        .analyzer-card {
+            background: var(--surface); border-radius: var(--radius-large);
+            border: 2px solid #f0e0b0; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+        .pro-banner-inline {
+            background: var(--pro-bg); padding: 15px 25px; border-radius: var(--radius-medium);
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 30px; border-left: 5px solid var(--pro-gold);
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--primary); }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: var(--radius-small); font-size: 14px; background-color: #fafafa; transition: border 0.2s; }
+        .form-control:focus { border-color: var(--primary); outline: none; background: white; }
+        .checkbox-group { margin-top: 8px; }
+        .checkbox-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 14px; cursor: pointer; }
+        .checkbox-item input { margin-right: 12px; width: 18px; height: 18px; accent-color: var(--primary); }
+        
+        .btn-submit-pro {
+            background-color: var(--primary); color: white; border: none; padding: 15px 35px; font-size: 16px; font-weight: bold;
+            border-radius: var(--radius-medium); cursor: pointer; box-shadow: 0 4px 12px rgba(17,51,34,0.15); transition: background 0.2s;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-submit-pro:hover { background-color: var(--primary-light); }
+
+        .result-box-pro {
+            margin-top: 35px; padding: 30px; border-radius: var(--radius-medium);
+            background-color: #fffdf5; border: 2px solid var(--pro-gold); display: none;
+        }
+        .result-text { font-size: 16px; color: var(--primary); margin-bottom: 15px; font-weight: 700;}
+        .result-text-container { background: white; padding: 20px; border-radius: var(--radius-medium); border: 1px solid #f0e0b0; }
+        .advice-list { margin-top: 10px; font-size: 15px; color: var(--text-main); line-height: 1.6; list-style: none;}
+        .advice-list li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;}
+
+        .sub-content h3 { font-size: 18px; color: var(--primary); margin-top: 20px; margin-bottom: 10px; }
+        .sub-content p { font-size: 15px; color: #555; line-height: 1.7; margin-bottom: 15px; text-align: justify; }
+
+        /* === PAGE 2: CHATBOT === */
+        .chat-container { display: grid; grid-template-columns: 300px 1fr; height: 600px; background: var(--surface); border-radius: var(--radius-large); box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border-color); overflow: hidden; }
+        @media (max-width: 768px) { .chat-container { grid-template-columns: 1fr; } .chat-sidebar { display: none; } }
+        .chat-sidebar { background: #f8faf9; padding: 25px; border-right: 1px solid var(--border-color); }
+        .sidebar-title { font-size: 16px; font-weight: 600; color: var(--primary); margin-bottom: 15px; }
+        .capsule-list { display: flex; flex-direction: column; gap: 12px; }
+        .capsule { background: var(--surface); border: 1px solid #e0e0e0; padding: 12px 16px; border-radius: var(--radius-medium); font-size: 14px; color: var(--primary); font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .capsule:hover { border-color: var(--primary); background: #f4f8f5; }
+        .chat-main { display: flex; flex-direction: column; height: 100%; background: #fafbfc; }
+        .chat-area { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .bubble { max-width: 70%; padding: 15px 20px; font-size: 15px; line-height: 1.6; border-radius: var(--radius-large); }
+        .bubble-sys { background: var(--surface); color: var(--text-main); align-self: flex-start; border-radius: 24px 24px 24px 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 12px; }
+        .bubble-sys i { color: var(--primary); margin-top: 4px; font-size: 18px; }
+        .bubble-sys strong { color: var(--primary); }
+        .bubble-sys .highlight { color: #d35400; font-weight: bold; }
+        .bubble-user { background: var(--primary); color: white; align-self: flex-end; border-radius: 24px 24px 4px 24px; box-shadow: 0 4px 12px rgba(17,51,34,0.15); }
+        .chat-input-bar { background: var(--surface); padding: 20px; display: flex; align-items: center; gap: 15px; border-top: 1px solid var(--border-color); }
+        .chat-input { flex-grow: 1; background: #f0f2f0; border: none; padding: 14px 20px; border-radius: 30px; font-size: 14px; outline: none; }
+        .send-btn { background: var(--primary); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: background 0.2s; }
+        .send-btn:hover { background-color: var(--primary-light); }
+
+        /* === PAGE 3: MARKETPLACE === */
+        .shop-layout { display: grid; grid-template-columns: 200px 1fr; gap: 30px; }
+        @media (max-width: 768px) { .shop-layout { grid-template-columns: 1fr; } .shop-sidebar { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; } }
+        .shop-sidebar { list-style: none; }
+        .filter-btn { width: 100%; text-align: left; padding: 12px 20px; border-radius: var(--radius-medium); font-size: 15px; font-weight: 500; border: none; background: transparent; color: var(--text-light); cursor: pointer; margin-bottom: 5px; }
+        .filter-btn.active, .filter-btn:hover { background: #eef2ef; color: var(--primary); font-weight: 600; }
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        @media (max-width: 1050px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .product-grid { grid-template-columns: 1fr; } }
+        .product-card { background: var(--surface); border-radius: var(--radius-large); padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); position: relative; }
+        .product-img { height: 160px; background: #fde8e8; border-radius: var(--radius-medium); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 50px; }
+        .product-img.p2 { background: #e8f4fd; } .product-img.p3 { background: #fdf5e8; } .product-img.p4 { background: #e8fde9; }
+        .promo-tag-shop { position: absolute; top: 25px; left: 25px; background: #e74c3c; color: white; font-size: 11px; padding: 4px 10px; border-radius: 10px; font-weight: 600; }
+        .product-name { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; height: 42px; overflow: hidden; }
+        .product-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 15px; }
+        .price { font-size: 18px; font-weight: 700; color: #000; }
+        .price-old { font-size: 13px; color: var(--text-light); text-decoration: line-through; }
+        .add-cart-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 10px; border-radius: var(--radius-small); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .add-cart-btn:hover { background: var(--primary-light); }
+
+        /* === PAGE 4: IOT DASHBOARD === */
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        @media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .metric-grid { grid-template-columns: 1fr; } }
+        .metric-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius-large); box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; }
+        .metric-title { font-size: 14px; color: var(--text-light); font-weight: 500; }
+        .metric-value { font-size: 32px; font-weight: 700; color: var(--primary); }
+        .metric-status { font-size: 13px; font-weight: 600; }
+        .dashboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 850px) { .dashboard-layout { grid-template-columns: 1fr; } }
+        .sensor-list { background: var(--surface); border-radius: var(--radius-large); padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
+        .sensor-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
+        .sensor-item:last-child { border: none; padding-bottom: 0; }
+        .sensor-name { font-size: 15px; font-weight: 500; }
+        .sensor-status-dot { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-light); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .insight-box { background: #eaf2ea; border: 1px solid #808000; border-radius: var(--radius-large); padding: 25px; display: flex; gap: 20px; height: fit-content; }
+        .insight-icon { color: #808000; font-size: 24px; }
+        .insight-text h4 { font-size: 16px; color: var(--primary); margin-bottom: 6px; }
+        .insight-text p { font-size: 14px; color: var(--text-main); line-height: 1.6; }
+
+        footer { background-color: #112211; color: #a0b0a0; text-align: center; padding: 25px; font-size: 14px; border-top: 1px solid var(--border-color); margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <navbar>
+        <div class="nav-container">
+            <a class="logo" href="#" onclick="switchTab('page-knowledge', document.getElementById('link-learn'))">
+                <i class="fas fa-seedling"></i> Soil mates
+            </a>
+            <ul class="nav-links">
+                <li><div id="link-learn" class="nav-link active" onclick="switchTab('page-knowledge', this)"><i class="fas fa-book-open"></i> Learn</div></li>
+                <li><div class="nav-link" onclick="switchTab('page-chat', this)"><i class="fas fa-comment-dots"></i> Ask Assistant</div></li>
+                <li><div class="nav-link" onclick="switchTab('page-shop', this)"><i class="fas fa-store"></i> Marketplace</div></li>
+                <li><div class="nav-link" onclick="switchTab('page-iot', this)"><i class="fas fa-broadcast-tower"></i> Sensors</div></li>
+                
+                <!-- Pro User Badge -->
+                <li class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-crown"></i></div>
+                    <div>
+                        <p style="font-size: 13px; font-weight: 700; color: #4a3500; line-height: 1.2;">Pro Member</p>
+                        <p style="font-size: 11px; color: #8a7744; line-height: 1.2;">Active</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </navbar>
+
+    <div class="main-container">
+        
+        <!-- PAGE 1: KNOWLEDGE BASE MAIN -->
+        <div id="page-knowledge" class="page active">
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <div class="pro-tag" style="margin-bottom: 12px;"><i class="fas fa-star"></i> Exclusive Pro Content</div>
+                    <h2>Turn Poor Soil into Rich Land</h2>
+                    <p>Analyze your soil conditions, browse scientific articles, or track live data from IoT sensors across your plots instantly.</p>
+                </div>
+                <!-- Pro Button -->
+                <button class="btn-pro-action" onclick="showSubPage('sub-assessment')">
+                    <i class="fas fa-microscope"></i> START PRO ANALYSIS
+                </button>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title">Knowledge Base</h2>
+                <div class="section-sub">Select a category to explore in-depth guides and scientific data</div>
+            </div>
+
+            <div class="grid-menu">
+                <div class="grid-item" onclick="showSubPage('sub-ph')">
+                    <div class="grid-icon icon-ph"><i class="fas fa-vial"></i></div>
+                    <div class="grid-title">Soil pH Level</div>
+                    <div class="grid-count">6 Articles</div>
+                </div>
+                <div class="grid-item" onclick="showSubPage('sub-moisture')">
+                    <div class="grid-icon icon-water"><i class="fas fa-tint"></i></div>
+                    <div class="grid-title">Soil Moisture</div>
+                    <div class="grid-count">4 Articles</div>
+                </div>
+                <div class="grid-item" onclick="showSubPage('sub-nutrients')">
+                    <div class="pro-badge-floating"><i class="fas fa-crown"></i></div>
+                    <div class="grid-icon icon-leaf"><i class="fas fa-seedling"></i></div>
+                    <div class="grid-title">Nutrient AI</div>
+                    <div class="grid-count">Pro Analysis</div>
+                </div>
+                <div class="grid-item" onclick="showSubPage('sub-pests')">
+                    <div class="pro-badge-floating"><i class="fas fa-crown"></i></div>
+                    <div class="grid-icon icon-bug"><i class="fas fa-bug"></i></div>
+                    <div class="grid-title">Pest Predictor</div>
+                    <div class="grid-count">Pro Forecast</div>
+                </div>
+            </div>
+
+            <div class="article-layout">
+                <div>
+                    <h3 class="section-title" style="font-size: 20px; margin-bottom: 15px;">Featured Articles</h3>
+                    <div class="article-list">
+                        <div class="article-card">
+                            <div class="article-img">🪴</div>
+                            <div class="article-info">
+                                <div class="article-title">How to neutralize highly acidic soil in major crop fields</div>
+                                <div class="article-tag">Soil pH</div>
+                            </div>
+                        </div>
+                        <div class="article-card">
+                            <div class="article-img">🌾</div>
+                            <div class="article-info">
+                                <div class="article-title">Understanding N-P-K balances for high-yield maize</div>
+                                <div class="article-tag">Nutrients</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="height: fit-content; padding: 20px; border: 1px solid #f0e0b0; background: #fffdf5;">
+                    <h4 style="color: #4a3500; margin-bottom: 10px; font-weight: 700;"><i class="fas fa-lightbulb" style="color: var(--pro-gold);"></i> Pro Quick Tip</h4>
+                    <p style="font-size: 13px; color: var(--text-light); line-height: 1.6;">Maintaining soil pH between 6.0 and 7.0 optimizes fertilizer efficiency, allowing crops to absorb up to 30% more nutrients compared to acidic soils.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- === SUB-PAGES FOR KNOWLEDGE BASE === -->
+        
+        <!-- 1. PRO Soil Assessment Form Page -->
+        <div id="sub-assessment" class="sub-page" style="display: none;">
+            <button class="back-btn" onclick="hideSubPage('sub-assessment')"><i class="fas fa-arrow-left"></i> Back to Knowledge Base</button>
+            <div class="analyzer-card">
+                
+                <div class="pro-banner-inline">
+                    <div>
+                        <h2 style="font-size: 22px; color: #4a3500; display: flex; align-items: center; gap: 10px; font-weight: 700;">
+                            <i class="fas fa-crown" style="color: var(--pro-gold);"></i> Soil Quality Diagnostics (PRO)
+                        </h2>
+                        <p style="font-size: 14px; color: #8a7744; margin-top: 4px;">Input your observation parameters for rule-based agricultural recommendations.</p>
+                    </div>
+                    <div class="pro-tag"><i class="fas fa-check"></i> Active Plan</div>
+                </div>
+                
+                <form id="soilForm" onsubmit="analyzeSoilPro(event)">
+                    <div class="form-grid">
+                        <div>
+                            <span style="font-size: 13px; font-weight: 700; color: var(--primary-light); text-transform: uppercase; margin-bottom: 15px; display: block; border-bottom: 1px solid #f0f4f1; padding-bottom: 5px;">1. Geological Profile Input</span>
+                            <div class="form-group">
+                                <label>Soil Texture Type</label>
+                                <select id="soilTexture" class="form-control" required>
+                                    <option value="">-- Select Texture --</option>
+                                    <option value="loam">Loam (Soft, balanced, crumbly)</option>
+                                    <option value="sand">Sand (Gritty, loose, non-cohesive)</option>
+                                    <option value="clay">Clay (Fine, dense, sticky when wet)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Soil Color Indication</label>
+                                <select id="soilColor" class="form-control" required>
+                                    <option value="">-- Select Color --</option>
+                                    <option value="dark">Dark Brown or Black (High Organic Content)</option>
+                                    <option value="red">Red or Orange/Yellow (Weathered, Iron-rich oxides)</option>
+                                    <option value="pale">Light Gray or Pale (Low Nutrients/Leached)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Known pH Level (Leave empty if unknown)</label>
+                                <input type="number" id="soilPH" class="form-control" step="0.1" min="1" max="14" placeholder="e.g., 5.5">
+                            </div>
+                        </div>
+                        <div>
+                            <span style="font-size: 13px; font-weight: 700; color: var(--primary-light); text-transform: uppercase; margin-bottom: 15px; display: block; border-bottom: 1px solid #f0f4f1; padding-bottom: 5px;">2. Field Symptoms & Anomalies</span>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="probHard"> Soil is heavily compact and hard to dig (Hardpan)</label>
+                                <label class="checkbox-item"><input type="checkbox" id="probWater"> Poor drainage / visible waterlogging after rain</label>
+                                <label class="checkbox-item"><input type="checkbox" id="probYellow"> Crops show yellow leaves (Chlorosis) or stunted growth</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn-submit-pro">
+                            GENERATE PRO DIAGNOSTICS <i class="fas fa-microchip"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="resultBox" class="result-box-pro">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0e0b0; padding-bottom: 15px; margin-bottom: 20px;">
+                        <h4 style="color: #4a3500; font-size: 18px; font-weight: 700;"><i class="fas fa-check-circle" style="color: #2e6f40;"></i> DIAGNOSTICS LOGGED SUCCESSFULLY</h4>
+                        <span class="pro-tag">PRO Report Generated</span>
+                    </div>
+                    <div id="resultAnalysis" class="result-text"></div>
+                    
+                    <div class="result-text-container">
+                        <p style="font-weight: 800; color: #4a3500; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; margin-bottom: 15px;">Premium Remediation & Action Steps Protocol:</p>
+                        <ul id="adviceList" class="advice-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Soil pH Sub-page -->
+        <div id="sub-ph" class="sub-page" style="display: none;">
+            <button class="back-btn" onclick="hideSubPage('sub-ph')"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="card sub-content">
+                <h2 class="section-title"><i class="fas fa-vial icon-ph"></i> Soil pH Dynamics</h2>
+                <h3>Understanding the pH Scale in Soil Science</h3>
+                <p>Soil pH defines the relative concentration of hydrogen ions and governs the chemical behavior of elements inside the soil ecosystem. A scale from 0 to 14 dictates whether your land is dangerously acidic or excessively alkaline. Most staple cash crops yield optimal results between a slightly narrow window of pH 6.0 to 7.0.</p>
+                <h3>Fixing Soil Acidification (Low pH)</h3>
+                <p>When soil drops below 5.5, toxicities in aluminum and manganese rise sharply, while essential nitrogen, phosphorus, and potassium molecules lock up. Applying standard agricultural lime (calcium carbonate) or dolomite effectively counteracts this acidity, raising the parameters to a safe, fertile baseline.</p>
+            </div>
+        </div>
+
+        <!-- 3. Moisture Sub-page -->
+        <div id="sub-moisture" class="sub-page" style="display: none;">
+            <button class="back-btn" onclick="hideSubPage('sub-moisture')"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="card sub-content">
+                <h2 class="section-title"><i class="fas fa-tint icon-water"></i> Hydrology & Moisture Retention</h2>
+                <h3>Water Management by Geological Texture</h3>
+                <p>Different soil profiles handle hydration uniquely. Sandy soils pose risks of extreme drainage, causing vital minerals to leach downward past root networks rapidly. Conversely, dense clay profiles store water so tightly that air pockets collapse, suffocating root cells and precipitating severe anaerobic root rot pathogens.</p>
+                <h3>Advanced Moisture Preservations</h3>
+                <p>Integrating mulch covers, minimizing intense tillage, and adding well-rotted compost builds a flexible porous framework that stabilizes water retention across all seasonal shifts.</p>
+            </div>
+        </div>
+
+        <!-- 4. Nutrients Sub-page -->
+        <div id="sub-nutrients" class="sub-page" style="display: none;">
+            <button class="back-btn" onclick="hideSubPage('sub-nutrients')"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="card sub-content">
+                <div class="pro-tag" style="margin-bottom: 15px;"><i class="fas fa-crown"></i> Premium Module Unlocked</div>
+                <h2 class="section-title"><i class="fas fa-seedling icon-leaf"></i> Primary Plant Macronutrients</h2>
+                <h3>Decoding N-P-K Macro Profiles</h3>
+                <p>Plants rely heavily on three vital chemical pillars to build robust cells and support biological processes:</p>
+                <p><strong>Nitrogen (N):</strong> The central catalyst for leafy vegetation growth, stem expansion, and heavy green chlorophyll synthesis.</p>
+                <p><strong>Phosphorus (P):</strong> Drives complex cellular division, healthy early root elongation, robust flowering, and seed maturation.</p>
+                <p><strong>Potassium (K):</strong> Regulates water transport, stomatal movement, and cellular turgidity, strengthening immune defenses against pests and frost conditions.</p>
+            </div>
+        </div>
+
+        <!-- 5. Pests Sub-page -->
+        <div id="sub-pests" class="sub-page" style="display: none;">
+            <button class="back-btn" onclick="hideSubPage('sub-pests')"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="card sub-content">
+                <div class="pro-tag" style="margin-bottom: 15px;"><i class="fas fa-crown"></i> Premium Module Unlocked</div>
+                <h2 class="section-title"><i class="fas fa-bug icon-bug"></i> Sub-surface Pests & Pathogens</h2>
+                <h3>Combating Soil-Borne Disease Entities</h3>
+                <p>Beneath the surface layer lies a complex battleground. Pathogenic fungi such as Pythium, Fusarium, and Phytophthora thrive inside poorly drained, oxygen-depleted horizons, causing devastating damp-off and root wilt syndromes across fields.</p>
+                <h3>Nematode Infestations</h3>
+                <p>Root-knot nematodes pierce cellular walls, creating visible defensive galls that disrupt vascular systems. Utilizing diverse multi-year crop rotations and cultivating cover crops like French Marigolds serves as an eco-friendly biological control strategy.</p>
+            </div>
+        </div>
+
+        <!-- PAGE 2: CHATBOT -->
+        <div id="page-chat" class="page">
+            <div class="section-header">
+                <h2 class="section-title">Ask Assistant</h2>
+                <div class="section-sub">Rule-Based automated response framework for fast field troubleshooting</div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <h3 class="sidebar-title">Popular Frequently Asked Topics</h3>
+                    <div class="capsule-list">
+                        <div class="capsule" onclick="sendQuickQuestion('How can I fix low soil pH in my plot?')">How to fix low pH?</div>
+                        <div class="capsule" onclick="sendQuickQuestion('Which NPK fertilizer formulas are best for general crop boost?')">Best fertilizer formula?</div>
+                        <div class="capsule" onclick="sendQuickQuestion('My soil is extremely hard and brick-like. What should I add?')">Fix hard compact soil</div>
+                    </div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-area" id="chatArea">
+                        <div class="bubble bubble-user">
+                            Hello, my corn field metrics indicate a pH of 5.2. How should I remediate this structure?
+                        </div>
+                        <div class="bubble bubble-sys">
+                            <i class="fas fa-book-open"></i>
+                            <div>
+                                Based on expert database matching, a <strong>pH of 5.2</strong> denotes a high-level acidic horizon.
+                                <br><br>
+                                Remediation Protocol: Evenly spread <span class="highlight">Agricultural Limestone</span> or Dolomite at approximately 100-200 kg per Rai. Deeply plow the field layer, then allow it to settle for 1-2 weeks before initiating crop cultivation cycles.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-bar">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Select a question on the left or type your query...">
+                        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: MARKETPLACE -->
+        <div id="page-shop" class="page">
+            <div class="section-header">
+                <h2 class="section-title">Marketplace</h2>
+                <div class="section-sub">Premium agricultural supplies, precision testing tools, and high-efficiency fertilizers</div>
+            </div>
+
+            <div class="shop-layout">
+                <div class="shop-sidebar">
+                    <button class="filter-btn active">All Products</button>
+                    <button class="filter-btn">Fertilizers</button>
+                    <button class="filter-btn">IoT Sensors</button>
+                    <button class="filter-btn">Field Tools</button>
+                </div>
+                <div>
+                    <div class="product-grid">
+                        <div class="product-card">
+                            <div class="promo-tag-shop">20% OFF</div>
+                            <div class="product-img p1">🌱</div>
+                            <div class="product-name">Organic Bio-Pellet Soil Conditioning Fertilizer (5kg)</div>
+                            <div class="product-price-row">
+                                <div class="price">$12.00</div>
+                                <div class="price-old">$15.00</div>
+                            </div>
+                            <button class="add-cart-btn">Add to Cart</button>
+                        </div>
+                        <div class="product-card">
+                            <div class="promo-tag-shop">NEW</div>
+                            <div class="product-img p2">📡</div>
+                            <div class="product-name">Soil Mate NPK Smart Precision Ground Sensor</div>
+                            <div class="product-price-row">
+                                <div class="price">$49.99</div>
+                            </div>
+                            <button class="add-cart-btn">Add to Cart</button>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-img p3">⛏️</div>
+                            <div class="product-name">Premium Forged Carbon Steel Trowel & Hoe Tool</div>
+                            <div class="product-price-row">
+                                <div class="price">$18.50</div>
+                            </div>
+                            <button class="add-cart-btn">Add to Cart</button>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-img p4">🧪</div>
+                            <div class="product-name">Rapid Colorimetric Soil pH Liquid Chemical Reagent Kit</div>
+                            <div class="product-price-row">
+                                <div class="price">$8.90</div>
+                            </div>
+                            <button class="add-cart-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: IOT DASHBOARD -->
+        <div id="page-iot" class="page">
+            <div class="section-header">
+                <h2 class="section-title">Sensors Dashboard</h2>
+                <div class="section-sub">Live telemetry stream from telemetry nodule array: <strong>Plot A — Corn Canopy</strong></div>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Ground Moisture</div>
+                    <div class="metric-value">42%</div>
+                    <div class="metric-status status-good" style="color: #4CAF50;">✓ Optimal</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Active Horizon pH</div>
+                    <div class="metric-value">5.2</div>
+                    <div class="metric-status status-warn" style="color: #FF9800;">⚠️ Low (Acidic)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Sub-surface Temp</div>
+                    <div class="metric-value">28°C</div>
+                    <div class="metric-status status-good" style="color: #4CAF50;">✓ Stable</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Available Nitrogen (N)</div>
+                    <div class="metric-value">18mg</div>
+                    <div class="metric-status status-bad" style="color: #F44336;">✕ Deficient</div>
+                </div>
+            </div>
+
+            <div class="dashboard-layout">
+                <div class="sensor-list">
+                    <h3 class="section-title" style="font-size: 18px; margin-bottom: 15px;">Hardware Node Array Status</h3>
+                    <div class="sensor-item">
+                        <div class="sensor-name">Sensor Node Cluster A1</div>
+                        <div class="sensor-status-dot"><div class="dot online" style="background:#4CAF50; box-shadow: 0 0 5px #4CAF50;"></div> Live / Online</div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="sensor-name">Sensor Node Cluster A2</div>
+                        <div class="sensor-status-dot"><div class="dot weak" style="background:#FF9800; box-shadow: 0 0 5px #FF9800;"></div> Weak RF Link</div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <div class="insight-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="insight-text">
+                        <h4>Automated Database Insights</h4>
+                        <p>Plot A analysis matrix flags intersecting low pH and nitrogen scarcity anomalies. It is advised to administer an application of compost coupled with raw agricultural dolomite to re-balance structural minerals before engaging the next planned irrigation system trigger.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Soil mates Portal Project. All rights reserved. Precision Agricultural Framework Solutions.</p>
+    </footer>
+
+    <script>
+        // Main Tab Navigation Control
+        function switchTab(pageId, navElement) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            });
+            document.querySelectorAll('.sub-page').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            document.querySelectorAll('.nav-link').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            const targetPage = document.getElementById(pageId);
+            targetPage.style.display = 'block';
+            setTimeout(() => targetPage.classList.add('active'), 10);
+            
+            if (navElement) { navElement.classList.add('active'); }
+        }
+
+        // Sub-page Management Logic
+        function showSubPage(subId) {
+            document.getElementById('page-knowledge').style.display = 'none';
+            const subView = document.getElementById(subId);
+            subView.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideSubPage(subId) {
+            document.getElementById(subId).style.display = 'none';
+            document.getElementById('page-knowledge').style.display = 'block';
+        }
+
+        // Automated Rule-Based Soil Analyzer Logic (PRO VERSION)
+        function analyzeSoilPro(event) {
+            event.preventDefault();
+            
+            const texture = document.getElementById('soilTexture').value;
+            const color = document.getElementById('soilColor').value;
+            const phInput = document.getElementById('soilPH').value;
+            const ph = phInput ? parseFloat(phInput) : null;
+            
+            const probHard = document.getElementById('probHard').checked;
+            const probWater = document.getElementById('probWater').checked;
+            const probYellow = document.getElementById('probYellow').checked;
+
+            const resBox = document.getElementById('resultBox');
+            const analysis = document.getElementById('resultAnalysis');
+            const list = document.getElementById('adviceList');
+            
+            let statusText = "";
+            let tips = [];
+
+            // Pattern Match Algorithms (Pro Phrasing)
+            if (texture === "clay" && color === "pale") {
+                statusText = "Matrix Profile: Pale Clay Horizon - Extreme Structural Hardpan & High Carbon Depletion.";
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Decompaction Protocol:</strong> Integrate carbonized rice hulls or high-porosity aggregate matrices at 1.5 tons/acre to build oxygen channels.");
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Humus Enrichment:</strong> Deep-till fully stabilized composted cow manure (aged 6+ months) to stimulate healthy microbial networks.");
+            } else if (texture === "sand") {
+                statusText = "Matrix Profile: Coarse Sandy Matrix - Low Cation-Exchange Capacity & High Mineral Leaching.";
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Moisture Interception:</strong> Incorporate heavy organic humic substances to structurally bind loose sand grains together.");
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Thermal Insulation:</strong> Deploy a dense surface mulch boundary layer to dramatically retard solar thermal fluid evaporation.");
+            } else if (ph !== null && ph < 5.5) {
+                statusText = "Matrix Profile: Accelerated Acidification Phase - Severe Sub-horizon Nutrient Lockup.";
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>pH Remediation (Urgent):</strong> Broadcast high-grade Dolomitic Limestone across plots to counteract active hydrogen ions and eliminate aluminum toxicity risks.");
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Absorption Recovery:</strong> Temporarily suspend high-nitrogen fertilizers until the base pH baseline crosses 6.0.");
+            } else if (texture === "loam" && color === "dark" && !probYellow && !probHard) {
+                statusText = "Matrix Profile: Premium Grade Humus Loam - Balanced Horizon Architecture.";
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Baseline Preservation:</strong> Conduct scheduled low-till practices and apply organic compost annually to preserve biological soil structure.");
+            } else {
+                statusText = "Matrix Profile: Imbalanced Substrate Dynamics with Minor Structural Variations.";
+                tips.push("<i class='fas fa-arrow-alt-circle-right' style='color:var(--pro-gold)'></i> <strong>Targeted Maintenance:</strong> Supplement your field beds with micro-nutrient solutions and ensure balanced crop rotation schedules.");
+            }
+
+            // Secondary Symptom Logic Overlays
+            if (probWater && texture !== "clay") {
+                tips.push("<i class='fas fa-tools' style='color:#e67e22'></i> <strong>Drainage Correction:</strong> Construct raised layout beds or incorporate gravel sub-drains to prevent moisture saturation anomalies.");
+            }
+            if (probYellow && color === "pale") {
+                tips.push("<i class='fas fa-flask' style='color:#e67e22'></i> <strong>Nitrogen Deficiency Correction:</strong> Introduce organic green manure or slow-release bio-fertilizers to correct extensive leaf chlorosis.");
+            }
+
+            if (tips.length === 0) {
+                tips.push("<i class='fas fa-check-double' style='color:var(--pro-gold)'></i> <strong>Maintenance:</strong> Continue standard practices. Add light maintenance organic compost twice per annum cycle.");
+            }
+
+            analysis.innerHTML = statusText;
+            list.innerHTML = "";
+            tips.forEach(t => {
+                let li = document.createElement('li');
+                li.innerHTML = t;
+                list.appendChild(li);
+            });
+
+            resBox.style.display = 'block';
+            setTimeout(() => {
+                resBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Chatbot Interface Simulation Scripts
+        function sendQuickQuestion(questionText) {
+            document.getElementById('chatInput').value = questionText;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const inputEl = document.getElementById('chatInput');
+            const chatArea = document.getElementById('chatArea');
+            const text = inputEl.value.trim();
+            
+            if (!text) return;
+
+            const userBubble = document.createElement('div');
+            userBubble.className = 'bubble bubble-user';
+            userBubble.innerText = text;
+            chatArea.appendChild(userBubble);
+            
+            inputEl.value = '';
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            setTimeout(() => {
+                const sysBubble = document.createElement('div');
+                sysBubble.className = 'bubble bubble-sys';
+                
+                let replyContent = "I've logged your request regarding field observation data. Our system advises consulting our comprehensive <strong>Soil Analyzer (PRO)</strong> inside the Learn section for rigorous diagnostic processing.";
+                
+                if (text.includes('pH')) {
+                    replyContent = "<i class='fas fa-book-open'></i><div>To resolve high soil acidity, spread <strong>agricultural lime</strong> or dolomite uniformly across your plot beds. Allow 1-2 weeks of resting time before scheduling any crop plantings.</div>";
+                } else if (text.includes('fertilizer') || text.includes('NPK')) {
+                    replyContent = "<i class='fas fa-book-open'></i><div>For standard leaf crops, prioritize high nitrogen formulas. If tracking live nutrient deficiency in active sensors, introduce slow-release granular organic complexes to avoid root burn.</div>";
+                } else if (text.includes('hard') || text.includes('compact')) {
+                    replyContent = "<i class='fas fa-book-open'></i><div>Heavy compaction is resolved by deep aeration plowing and massive structural infusion of coarse organic aggregates such as <strong>carbonized rice husks</strong> or dry manure matrices.</div>";
+                }
+
+                sysBubble.innerHTML = replyContent;
+                chatArea.appendChild(sysBubble);
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 700);
+        }
+    </script>
+</body>
+</html>
