@@ -374,10 +374,23 @@
 
         /* === PAGE 4: IOT DASHBOARD === */
         .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
-        .metric-card { background: var(--surface); padding: 20px; border-radius: var(--radius-large); box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; }
-        .metric-title { font-size: 13px; color: var(--text-light); font-weight: 500; }
+        .metric-card { background: var(--surface); padding: 20px; border-radius: var(--radius-large); box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; border-left: 5px solid transparent; }
+        .metric-title { font-size: 13px; color: var(--text-light); font-weight: 600; }
         .metric-value { font-size: 28px; font-weight: 700; color: var(--primary); }
         .metric-status { font-size: 12px; font-weight: 600; }
+        
+        .npk-block { background: var(--surface); border-radius: var(--radius-large); padding: 25px; border: 1px solid var(--border-color); margin-bottom: 25px; }
+        .npk-row { margin-bottom: 15px; }
+        .npk-row:last-child { margin-bottom: 0; }
+        .npk-label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .npk-progress-bg { background: #F2EFEA; height: 12px; border-radius: 6px; overflow: hidden; }
+        .npk-progress-bar { height: 100%; border-radius: 6px; }
+
+        .pesticide-recommend-box { background: #FFFEEB; border: 1px solid #E6D7A8; border-radius: var(--radius-large); padding: 25px; margin-top: 25px; }
+        .pesticide-title { color: #7A6016; font-size: 16px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .pesticide-item { font-size: 14px; color: #4A3E1B; margin-bottom: 10px; line-height: 1.5; }
+        .pesticide-item:last-child { margin-bottom: 0; }
+
         .dashboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .sensor-list { background: var(--surface); border-radius: var(--radius-large); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
         .sensor-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
@@ -385,10 +398,6 @@
         .sensor-name { font-size: 14px; font-weight: 500; }
         .sensor-status-dot { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); }
         .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .insight-box { background: #eaf2ea; border: 1px solid #808000; border-radius: var(--radius-large); padding: 20px; display: flex; gap: 15px; height: fit-content; }
-        .insight-icon { color: #808000; font-size: 24px; flex-shrink: 0; }
-        .insight-text h4 { font-size: 15px; color: var(--primary-light); margin-bottom: 4px; }
-        .insight-text p { font-size: 13px; color: var(--text-main); line-height: 1.5; }
 
         .card-label { font-size: 13px; font-weight: 700; color: var(--primary-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; display: block; border-bottom: 1px solid #f0f4f1; padding-bottom: 5px; }
         footer { background-color: #211611; color: #bcaaa4; text-align: center; padding: 25px; font-size: 13px; border-top: 1px solid var(--border-color); margin-top: 50px; }
@@ -414,7 +423,6 @@
             .chat-container { grid-template-columns: 1fr; height: 500px; }
             .chat-sidebar { display: none; }
             
-            /* Responsive Marketplace Horizontal Scroll Header for Mobile Screen */
             .shop-sidebar { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
             .shop-sidebar::-webkit-scrollbar { display: none; }
             .filter-btn { width: auto; padding: 8px 16px; font-size: 13px; white-space: nowrap; }
@@ -429,13 +437,11 @@
             .article-card { flex-direction: column; text-align: center; gap: 10px; }
             .bubble { max-width: 90%; font-size: 13px; padding: 10px 14px; }
             .hero-text h2 { font-size: 22px; }
-            .insight-box { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation Bar -->
     <navbar>
         <div class="nav-container">
             <a class="logo" href="#" onclick="switchTab('page-knowledge', document.getElementById('link-learn'))">
@@ -447,11 +453,9 @@
                 <li><div class="nav-link" id="link-shop" onclick="switchTab('page-shop', this)"><i class="fas fa-store"></i> Marketplace</div></li>
                 <li><div class="nav-link" onclick="switchTab('page-iot', this)"><i class="fas fa-broadcast-tower"></i> Sensors</div></li>
                 
-                <!-- Login & Register UI Trigger State -->
                 <li id="nav-login-btn"><button class="btn-login" onclick="openModal('loginModal')">Login</button></li>
                 <li id="nav-register-btn"><button class="btn-register" onclick="openModal('registerModal')">Register</button></li>
 
-                <!-- Pro User Profile Nodule -->
                 <li class="user-profile" id="userProProfile" style="display: none;">
                     <div class="user-avatar"><i class="fas fa-crown"></i></div>
                     <div>
@@ -462,7 +466,6 @@
         </div>
     </navbar>
 
-    <!-- === INTERACTIVE LOGIN MODAL === -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
@@ -481,7 +484,6 @@
         </div>
     </div>
 
-    <!-- === INTERACTIVE REGISTER MODAL === -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('registerModal')">&times;</span>
@@ -506,7 +508,6 @@
 
     <div class="main-container">
         
-        <!-- PAGE 1: KNOWLEDGE BASE MAIN -->
         <div id="page-knowledge" class="page active">
             <div class="hero-banner">
                 <div class="hero-text">
@@ -576,9 +577,6 @@
             </div>
         </div>
 
-        <!-- === SUB-PAGES FOR KNOWLEDGE BASE === -->
-        
-        <!-- 1. PRO Soil Assessment Form Page -->
         <div id="sub-assessment" class="sub-page" style="display: none;">
             <button class="back-btn" onclick="hideSubPage('sub-assessment')"><i class="fas fa-arrow-left"></i> Back to Knowledge Base</button>
             <div class="analyzer-card">
@@ -651,7 +649,6 @@
             </div>
         </div>
 
-        <!-- 2. Soil pH Sub-page -->
         <div id="sub-ph" class="sub-page" style="display: none;">
             <button class="back-btn" onclick="hideSubPage('sub-ph')"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="card sub-content">
@@ -663,7 +660,6 @@
             </div>
         </div>
 
-        <!-- 3. Moisture Sub-page -->
         <div id="sub-moisture" class="sub-page" style="display: none;">
             <button class="back-btn" onclick="hideSubPage('sub-moisture')"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="card sub-content">
@@ -675,7 +671,6 @@
             </div>
         </div>
 
-        <!-- 4. Nutrients Sub-page -->
         <div id="sub-nutrients" class="sub-page" style="display: none;">
             <button class="back-btn" onclick="hideSubPage('sub-nutrients')"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="card sub-content">
@@ -689,7 +684,6 @@
             </div>
         </div>
 
-        <!-- 5. Pests Sub-page -->
         <div id="sub-pests" class="sub-page" style="display: none;">
             <button class="back-btn" onclick="hideSubPage('sub-pests')"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="card sub-content">
@@ -702,7 +696,6 @@
             </div>
         </div>
 
-        <!-- PAGE 2: CHATBOT -->
         <div id="page-chat" class="page">
             <div class="section-header">
                 <h2 class="section-title">Ask Assistant</h2>
@@ -740,7 +733,6 @@
             </div>
         </div>
 
-        <!-- PAGE 3: MARKETPLACE -->
         <div id="page-shop" class="page">
             <div class="section-header">
                 <h2 class="section-title">Marketplace</h2>
@@ -748,7 +740,6 @@
             </div>
 
             <div class="shop-layout">
-                <!-- Clickable Category Sidebar / Header Filter Links -->
                 <div class="shop-sidebar">
                     <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
                     <button class="filter-btn" onclick="filterProducts('fertilizer', this)">Fertilizers</button>
@@ -756,7 +747,6 @@
                     <button class="filter-btn" onclick="filterProducts('tools', this)">Field Tools</button>
                 </div>
                 <div>
-                    <!-- Product Matrix Grid mapped with discrete data-category tags -->
                     <div class="product-grid" id="productGrid">
                         <div class="product-card" data-category="fertilizer">
                             <div class="promo-tag-shop">20% OFF</div>
@@ -768,15 +758,25 @@
                             </div>
                             <button class="add-cart-btn">Add to Cart</button>
                         </div>
+                        
                         <div class="product-card" data-category="sensor">
                             <div class="promo-tag-shop">NEW</div>
-                            <div class="product-img p2">📡</div>
-                            <div class="product-name">Soil Mate NPK Smart Precision Ground Sensor</div>
+                            <div class="product-img p2" style="font-size: 13px; line-height:1.3; flex-direction: column; background: #EAF0F6; color: #2C3E50; font-weight:bold; justify-content:center; text-align:center;">
+                                <span style="font-size:36px;">📡</span>
+                                <span>Soil mates Pro Probe</span>
+                                <span style="font-size:10px; font-weight:normal; opacity:0.8;">22cm Precision NPK Array</span>
+                            </div>
+                            <div class="product-name">Soil mates Pro Smart Telemetry Probe (Bluetooth 5.2)</div>
+                            <div style="font-size:11px; color: var(--text-light); margin-bottom:10px; line-height:1.4;">
+                                <strong>Dimensions:</strong> 22cm Total Height | 4.4cm Probe Pin Length<br>
+                                <strong>Hardware:</strong> Heavy-Duty Pocket Clip, Power & Connect Buttons
+                            </div>
                             <div class="product-price-row">
                                 <div class="price">$49.99</div>
                             </div>
                             <button class="add-cart-btn">Add to Cart</button>
                         </div>
+
                         <div class="product-card" data-category="tools">
                             <div class="product-img p3">⛏️</div>
                             <div class="product-name">Premium Forged Carbon Steel Trowel & Hoe Tool</div>
@@ -798,54 +798,68 @@
             </div>
         </div>
 
-        <!-- PAGE 4: IOT DASHBOARD -->
         <div id="page-iot" class="page">
             <div class="section-header">
                 <h2 class="section-title">Sensors Dashboard</h2>
-                <div class="section-sub">Live telemetry stream from node array: <strong>Plot A — Corn Canopy</strong></div>
+                <div class="section-sub">Live telemetry stream from network node: <strong style="color:var(--primary-light);">Active Field Node Array</strong></div>
             </div>
 
             <div class="metric-grid">
-                <div class="metric-card">
-                    <div class="metric-title">Ground Moisture</div>
-                    <div class="metric-value">42%</div>
-                    <div class="metric-status status-good" style="color: #4CAF50;">✓ Optimal</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Active Horizon pH</div>
+                <div class="metric-card" style="border-left-color: #e74c3c;">
+                    <div class="metric-title"><i class="fas fa-vial" style="color:#A0522D;"></i> 1. pH LEVEL</div>
                     <div class="metric-value">5.2</div>
-                    <div class="metric-status status-warn" style="color: #FF9800;">⚠️ Low (Acidic)</div>
+                    <div class="metric-status" style="color: #e74c3c;">⚠️ CRITICAL ACIDIC</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-title">Sub-surface Temp</div>
-                    <div class="metric-value">28°C</div>
-                    <div class="metric-status status-good" style="color: #4CAF50;">✓ Stable</div>
+                <div class="metric-card" style="border-left-color: #3498db;">
+                    <div class="metric-title"><i class="fas fa-tint" style="color:#4682B4;"></i> 2. MOISTURE</div>
+                    <div class="metric-value">85%</div>
+                    <div class="metric-status" style="color: #3498db;">⚠️ WATERLOGGED</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-title">Available Nitrogen (N)</div>
-                    <div class="metric-value">18mg</div>
-                    <div class="metric-status status-bad" style="color: #F44336;">✕ Deficient</div>
+                <div class="metric-card" style="border-left-color: #2ecc71;">
+                    <div class="metric-title"><i class="fas fa-thermometer-half" style="color:#556B2F;"></i> 3. TEMPERATURE</div>
+                    <div class="metric-value">29.2°C</div>
+                    <div class="metric-status" style="color: #2ecc71;">✓ OPTIMAL</div>
+                </div>
+                <div class="metric-card" style="border-left-color: #2ecc71;">
+                    <div class="metric-title"><i class="fas fa-bolt"></i> 4. ELECTRICAL CONDUCTIVITY (EC)</div>
+                    <div class="metric-value">1.2 <span style="font-size:14px; font-weight:normal; color:var(--text-light)">mS/cm</span></div>
+                    <div class="metric-status" style="color: #2ecc71;">✓ BALANCED</div>
                 </div>
             </div>
 
-            <div class="dashboard-layout">
-                <div class="sensor-list">
-                    <h3 class="section-title" style="font-size: 18px; margin-bottom: 15px;">Hardware Node Array Status</h3>
-                    <div class="sensor-item">
-                        <div class="sensor-name">Sensor Node Cluster A1</div>
-                        <div class="sensor-status-dot"><div class="dot online" style="background:#4CAF50; box-shadow: 0 0 5px #4CAF50;"></div> Live / Online</div>
-                    </div>
-                    <div class="sensor-item">
-                        <div class="sensor-name">Sensor Node Cluster A2</div>
-                        <div class="sensor-status-dot"><div class="dot weak" style="background:#FF9800; box-shadow: 0 0 5px #FF9800;"></div> Weak RF Link</div>
-                    </div>
+            <div class="npk-block">
+                <h3 class="card-label" style="font-size:14px;"><i class="fas fa-chart-bar"></i> 5. TOTAL N-P-K NUTRIENTS</h3>
+                
+                <div class="npk-row">
+                    <div class="npk-label"><span>Nitrogen (N)</span> <span style="color: #e67e22; font-weight:700;">30 mg/kg [LOW]</span></div>
+                    <div class="npk-progress-bg"><div class="npk-progress-bar" style="width: 20%; background: #e67e22;"></div></div>
                 </div>
+                
+                <div class="npk-row">
+                    <div class="npk-label"><span>Phosphorus (P)</span> <span style="color: #2ecc71; font-weight:700;">120 mg/kg [OPTIMAL]</span></div>
+                    <div class="npk-progress-bg"><div class="npk-progress-bar" style="width: 75%; background: #2ecc71;"></div></div>
+                </div>
+                
+                <div class="npk-row">
+                    <div class="npk-label"><span>Potassium (K)</span> <span style="color: #2ecc71; font-weight:700;">110 mg/kg [OPTIMAL]</span></div>
+                    <div class="npk-progress-bg"><div class="npk-progress-bar" style="width: 68%; background: #2ecc71;"></div></div>
+                </div>
+            </div>
 
-                <div class="insight-box">
-                    <div class="insight-icon"><i class="fas fa-lightbulb"></i></div>
-                    <div class="insight-text">
-                        <h4>Automated Database Insights</h4>
-                        <p>Plot A analysis matrix flags intersecting low pH and nitrogen scarcity anomalies. It is advised to administer an application of compost coupled with raw agricultural dolomite to re-balance structural minerals before engaging the next planned irrigation system trigger.</p>
+            <div class="pesticide-recommend-box">
+                <h3 class="pesticide-title"><i class="fas fa-shield-halved"></i> Pesticide & Dosage Recommendation</h3>
+                <div class="pesticide-item"><strong><i class="fas fa-bug"></i> Target Pest Threat:</strong> Active Fungus Gnat Larvae & Root Rot.</div>
+                <div class="pesticide-item"><strong><i class="fas fa-flask"></i> Required Chemical:</strong> Cold-Pressed Organic Neem Oil Solution.</div>
+                <div class="pesticide-item"><strong><i class="fas fa-mortar-pestle"></i> Liquid Mixing Ratio:</strong> Combine exactly 20 mL of Neem Oil and 1.5 mL of liquid dish soap inside 4 Liters of clean water.</div>
+                <div class="pesticide-item"><strong><i class="fas fa-mountain"></i> Soil Treatment Fix:</strong> Mix 500 grams of Dolomite Lime per square meter to neutralize heavy acid levels.</div>
+            </div>
+
+            <div class="dashboard-layout" style="margin-top:25px;">
+                <div class="sensor-list">
+                    <h3 class="section-title" style="font-size: 16px; margin-bottom: 15px;">Hardware Cluster Connection</h3>
+                    <div class="sensor-item">
+                        <div class="sensor-name">Smart Probe Pro - Node Cluster A1</div>
+                        <div class="sensor-status-dot"><div class="dot online" style="background:#4CAF50; box-shadow: 0 0 5px #4CAF50;"></div> Synchronized</div>
                     </div>
                 </div>
             </div>
@@ -900,15 +914,10 @@
 
         // Interactive Marketplace Category Filter Engine
         function filterProducts(category, buttonElement) {
-            // Remove active color bounds from all local category nodes
             document.querySelectorAll('.shop-sidebar .filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Allocate active bounding style over triggered nodule
             buttonElement.classList.add('active');
-            
-            // Loop through card matrix arrays and execute conditional visibility matches
             document.querySelectorAll('.product-grid .product-card').forEach(card => {
                 const cardCategory = card.getAttribute('data-category');
                 if (category === 'all' || cardCategory === category) {
