@@ -356,15 +356,15 @@
         .send-btn:hover { background-color: #1e4629; }
 
         /* === PAGE 3: MARKETPLACE === */
-        .shop-layout { display: grid; grid-template-columns: 200px 1fr; gap: 25px; }
-        .shop-sidebar { list-style: none; }
-        .filter-btn { width: 100%; text-align: left; padding: 10px 16px; border-radius: var(--radius-medium); font-size: 14px; font-weight: 500; border: none; background: transparent; color: var(--text-light); cursor: pointer; margin-bottom: 5px; }
-        .filter-btn.active, .filter-btn:hover { background: #eef2ef; color: var(--primary-light); font-weight: 600; }
+        .shop-layout { display: grid; grid-template-columns: 220px 1fr; gap: 25px; }
+        .shop-sidebar { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+        .filter-btn { width: 100%; text-align: left; padding: 12px 20px; border-radius: var(--radius-medium); font-size: 14px; font-weight: 600; border: none; background: transparent; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #EFEAE4; color: var(--primary); }
         .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .product-card { background: var(--surface); border-radius: var(--radius-large); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); position: relative; }
-        .product-img { height: 140px; background: #fde8e8; border-radius: var(--radius-medium); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 44px; }
-        .product-img.p2 { background: #e8f4fd; } .product-img.p3 { background: #fdf5e8; } .product-img.p4 { background: #e8fde9; }
-        .promo-tag-shop { position: absolute; top: 20px; left: 20px; background: #e74c3c; color: white; font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+        .product-card { background: var(--surface); border-radius: var(--radius-large); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-color); position: relative; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-3px); }
+        .product-img { height: 140px; background: #FAF6F2; border-radius: var(--radius-medium); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 44px; }
+        .promo-tag-shop { position: absolute; top: 20px; left: 20px; background: #e74c3c; color: white; font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 600; z-index: 2; }
         .product-name { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; height: 40px; overflow: hidden; }
         .product-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
         .price { font-size: 16px; font-weight: 700; color: #000; }
@@ -413,9 +413,12 @@
             .article-layout, .form-grid, .dashboard-layout, .shop-layout { grid-template-columns: 1fr; gap: 20px; }
             .chat-container { grid-template-columns: 1fr; height: 500px; }
             .chat-sidebar { display: none; }
-            .shop-sidebar { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
+            
+            /* Responsive Marketplace Horizontal Scroll Header for Mobile Screen */
+            .shop-sidebar { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
             .shop-sidebar::-webkit-scrollbar { display: none; }
-            .filter-btn { width: auto; margin-bottom: 0; padding: 8px 16px; font-size: 13px; white-space: nowrap; }
+            .filter-btn { width: auto; padding: 8px 16px; font-size: 13px; white-space: nowrap; }
+            
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .pro-banner-inline { flex-direction: column; align-items: flex-start; gap: 10px; }
             .btn-submit-pro { width: 100%; justify-content: center; }
@@ -441,14 +444,14 @@
             <ul class="nav-links">
                 <li><div id="link-learn" class="nav-link active" onclick="switchTab('page-knowledge', this)"><i class="fas fa-book-open"></i> Learn</div></li>
                 <li><div class="nav-link" onclick="switchTab('page-chat', this)"><i class="fas fa-comment-dots"></i> Ask Assistant</div></li>
-                <li><div class="nav-link" onclick="switchTab('page-shop', this)"><i class="fas fa-store"></i> Marketplace</div></li>
+                <li><div class="nav-link" id="link-shop" onclick="switchTab('page-shop', this)"><i class="fas fa-store"></i> Marketplace</div></li>
                 <li><div class="nav-link" onclick="switchTab('page-iot', this)"><i class="fas fa-broadcast-tower"></i> Sensors</div></li>
                 
                 <!-- Login & Register UI Trigger State -->
                 <li id="nav-login-btn"><button class="btn-login" onclick="openModal('loginModal')">Login</button></li>
                 <li id="nav-register-btn"><button class="btn-register" onclick="openModal('registerModal')">Register</button></li>
 
-                <!-- Pro User Profile Nodule (Initially Hidden till Simulated Login) -->
+                <!-- Pro User Profile Nodule -->
                 <li class="user-profile" id="userProProfile" style="display: none;">
                     <div class="user-avatar"><i class="fas fa-crown"></i></div>
                     <div>
@@ -745,15 +748,17 @@
             </div>
 
             <div class="shop-layout">
+                <!-- Clickable Category Sidebar / Header Filter Links -->
                 <div class="shop-sidebar">
-                    <button class="filter-btn active">All Products</button>
-                    <button class="filter-btn">Fertilizers</button>
-                    <button class="filter-btn">IoT Sensors</button>
-                    <button class="filter-btn">Field Tools</button>
+                    <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+                    <button class="filter-btn" onclick="filterProducts('fertilizer', this)">Fertilizers</button>
+                    <button class="filter-btn" onclick="filterProducts('sensor', this)">IoT Sensors</button>
+                    <button class="filter-btn" onclick="filterProducts('tools', this)">Field Tools</button>
                 </div>
                 <div>
-                    <div class="product-grid">
-                        <div class="product-card">
+                    <!-- Product Matrix Grid mapped with discrete data-category tags -->
+                    <div class="product-grid" id="productGrid">
+                        <div class="product-card" data-category="fertilizer">
                             <div class="promo-tag-shop">20% OFF</div>
                             <div class="product-img p1">🌱</div>
                             <div class="product-name">Organic Bio-Pellet Soil Conditioning Fertilizer (5kg)</div>
@@ -763,7 +768,7 @@
                             </div>
                             <button class="add-cart-btn">Add to Cart</button>
                         </div>
-                        <div class="product-card">
+                        <div class="product-card" data-category="sensor">
                             <div class="promo-tag-shop">NEW</div>
                             <div class="product-img p2">📡</div>
                             <div class="product-name">Soil Mate NPK Smart Precision Ground Sensor</div>
@@ -772,16 +777,16 @@
                             </div>
                             <button class="add-cart-btn">Add to Cart</button>
                         </div>
-                        <div class="product-card">
-                            <div class="promo-tag-shop">⛏️</div>
+                        <div class="product-card" data-category="tools">
+                            <div class="product-img p3">⛏️</div>
                             <div class="product-name">Premium Forged Carbon Steel Trowel & Hoe Tool</div>
                             <div class="product-price-row">
                                 <div class="price">$18.50</div>
                             </div>
                             <button class="add-cart-btn">Add to Cart</button>
                         </div>
-                        <div class="product-card">
-                            <div class="promo-tag-shop">🧪</div>
+                        <div class="product-card" data-category="tools">
+                            <div class="product-img p4">🧪</div>
                             <div class="product-name">Rapid Colorimetric Soil pH Liquid Chemical Reagent Kit</div>
                             <div class="product-price-row">
                                 <div class="price">$8.90</div>
@@ -891,6 +896,27 @@
             setTimeout(() => targetPage.classList.add('active'), 10);
             
             if (navElement) { navElement.classList.add('active'); }
+        }
+
+        // Interactive Marketplace Category Filter Engine
+        function filterProducts(category, buttonElement) {
+            // Remove active color bounds from all local category nodes
+            document.querySelectorAll('.shop-sidebar .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Allocate active bounding style over triggered nodule
+            buttonElement.classList.add('active');
+            
+            // Loop through card matrix arrays and execute conditional visibility matches
+            document.querySelectorAll('.product-grid .product-card').forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === 'all' || cardCategory === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
         // Sub-page Management Logic
